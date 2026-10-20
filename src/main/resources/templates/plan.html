@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- para que se vea bien en el móvil -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mi plan de estudio</title>
+    <style>
+        :root { --bg:#f4f6fb; --card:#fff; --text:#1f2937; --muted:#6b7280; --accent:#4f46e5; }
+        @media (prefers-color-scheme: dark) {
+            :root { --bg:#111827; --card:#1f2937; --text:#f3f4f6; --muted:#9ca3af; --accent:#818cf8; }
+        }
+        * { box-sizing: border-box; }
+        body { margin:0; padding:1rem; background:var(--bg); color:var(--text);
+            font-family: system-ui, sans-serif; line-height:1.5; }
+        main { max-width:40rem; margin:0 auto; background:var(--card);
+            padding:1.5rem; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.1); }
+        h1 { margin-top:0; font-size:1.6rem; }
+        h2 { color:var(--accent); font-size:1.2rem; }
+        ol { padding:0; list-style:none; }
+        li { display:flex; justify-content:space-between; gap:1rem;
+            padding:.6rem 0; border-bottom:1px solid rgba(128,128,128,.25); }
+        .minutos { color:var(--muted); white-space:nowrap; }
+        .escala { display:flex; flex-wrap:wrap; gap:.5rem; padding:0; list-style:none; }
+        .escala li { border:none; padding:.2rem .7rem; border-radius:999px;
+            background:var(--accent); color:#fff; }
+        .resumen { font-weight:600; }
+    </style>
+</head>
+<body>
+<main>
+    <!-- Saludo: th:text pone el nombre que llega del controlador (o de ?nombre=).
+         Escapa el HTML, así que si escriben etiquetas se ven como texto -->
+    <p>Hola, <strong th:text="${nombre}">estudiante</strong> Lucia</p>
+
+    <!-- Título que viene del controlador -->
+    <h1 th:text="${titulo}">Título del plan</h1>
+
+    <!-- #lists.size() cuenta cuántas asignaturas hay en la lista -->
+    <h2>Asignaturas (<span th:text="${#lists.size(asignaturas)}">0</span>)</h2>
+
+    <ol>
+        <!-- th:each recorre la lista de asignaturas.
+             iterStat guarda el estado y iterStat.index es la posición (empieza en 0) -->
+        <li th:each="asignatura, iterStat : ${asignaturas}">
+
+            <!-- Se suma 1 al índice para numerar desde el 1 -->
+            <span th:text="${iterStat.index + 1} + '. ' + ${asignatura}">1. Asignatura</span>
+
+            <!-- Con el mismo índice saco la duración de la otra lista -->
+            <span class="minutos" th:text="${duraciones[iterStat.index]} + ' min'">0 min</span>
+        </li>
+    </ol>
+
+    <!-- Total de minutos (lo calcula el controlador).
+         #numbers.formatDecimal(valor, enteros mínimos, separador de miles, decimales, separador decimal)
+         Dividimos entre 60.0 para pasar a horas y lo muestra con 2 decimales, por ejemplo 1,58 -->
+    <p class="resumen">
+        Total: <span th:text="${totalMinutos}">0</span> min
+        (<span th:text="${#numbers.formatDecimal(totalMinutos / 60.0, 1, 'POINT', 2, 'COMMA')}">0,00</span> horas)
+    </p>
+
+    <!-- Ampliación: #numbers.sequence(1, n) genera los números del 1 al n,
+         y aquí n es el número de asignaturas -->
+    <h2>Escala del plan</h2>
+    <ul class="escala">
+        <li th:each="n : ${#numbers.sequence(1, #lists.size(asignaturas))}" th:text="${n}">1</li>
+    </ul>
+
+</main>
+</body>
+</html>
