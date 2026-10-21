@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name = "viewport" content="width=device-width, initial-sacle=1">
+    <title>Ficha Tecnica</title>
+</head>
+<body>
+<main>
+    <h1>Ficha Tecnica</h1>
+<!-- Mostramos el nombre del material-->
+    <h2 th:text="${material[1]}">Nombre</h2>
+    <!-- Mostramos el codigo del material.-->
+    <p><strong>Codigo: </strong><span th:text="${material[0]}">Codigo</span></p>
+    <!-- Mostramos la descripcion del material.-->
+    <p><strong>Descripcion: </strong><span th:text="${material[2]}">Codigo</span></p>
+</main>
+
+</body>
+</html>

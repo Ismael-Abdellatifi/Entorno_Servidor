@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name = "viewport" content="width=device-width, initial-sacle=1">
+    <title>Catalogo</title>
+</head>
+<body>
+<main>
+    <h1>Catalogo</h1>
+
+    <!--Recorremos los materiales recibidos desde el controlador y se muestra los materiales.-->
+    <ul class="catalogo">
+     <li th:each="m : ${materiales}">
+         <p th:text= "${m[1]}"></p>
+         <!-- Se crea un enlace a la ficha del material utilizando especificamente su codigo-->
+         <a th:href="@{/materiales/{codigo}(codigo=${m[0]})}">Ver ficha</a>
+     </li>
+    </ul>
+</main>
+</body>
+</html>
