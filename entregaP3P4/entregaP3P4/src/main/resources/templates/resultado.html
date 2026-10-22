@@ -1,10 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <title>Resumen de la solicitud</title>
+
 </head>
 <body>
+<main>
+    <h1>Resumen de tu solicitud</h1>
+    <div class="tarjeta">
 
+        <p><strong>Nombre:</strong> <span th:text="${solicitud.nombre}"></span></p>
+        <p><strong>Correo:</strong> <span th:text="${solicitud.correo}"></span></p>
+        <p><strong>Material:</strong> <span th:text="${nombreMaterial}"></span>
+            (<span th:text="${solicitud.material}"></span>)</p>
+        <p><strong>Unidades:</strong> <span th:text="${solicitud.unidades}"></span></p>
+        <p><strong>Recogida:</strong> <span th:text="${solicitud.fechaRecogida}"></span></p>
+        <p><strong>Devolución:</strong> <span th:text="${solicitud.fechaDevolucion}"></span></p>
+        <p><strong>Motivo:</strong> <span th:text="${solicitud.motivo}"></span></p>
+        <p><strong>Normas aceptadas:</strong> <span th:text="${solicitud.normas ? 'Sí' : 'No'}"></span></p>
+        <p><strong>Días del préstamo:</strong> <span th:text="${dias}"></span></p>
+        <p><strong>Total días-unidad:</strong> <span th:text="${diasUnidad}"></span></p>
+
+
+        <p th:if="${dias == 1}">Préstamo de un solo día.</p>
+        <p th:unless="${dias == 1}">Préstamo de varios días.</p>
+    </div>
+
+    <p><em>Solicitud recibida solo a modo de resumen: no se ha guardado ni reservado ningún material.</em></p>
+    <!--Un enlace directo al catalgo siempre cuando el usuario no quiere estar en pagina incorrecta o se haya equivocado.-->
+    <p><a th:href="@{/}">Volver al catálogo</a></p>
+</main>
 </body>
 </html>

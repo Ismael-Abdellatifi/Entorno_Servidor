@@ -1,10 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <title>Solicitud de préstamo</title>
+
 </head>
 <body>
+<main>
+    <h1>Solicitud de préstamo</h1>
 
+
+    <form th:action="@{/solicitudes}" th:object="${solicitud}" method="post">
+
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" th:field="*{nombre}" maxlength="60">
+        <span class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+
+        <label for="correo">Correo electrónico</label>
+        <input type="email" id="correo" th:field="*{correo}" maxlength="120">
+        <span class="error" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></span>
+
+        <label for="material">Material</label>
+        <select id="material" th:field="*{material}">
+            <option value="">-- Elige un material --</option>
+            <!--/* Las opciones vienen del array del modelo; th:field marca la seleccionada */-->
+            <option th:each="m : ${materiales}" th:value="${m[0]}" th:text="${m[1]}"></option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('material')}" th:errors="*{material}"></span>
+
+        <label for="unidades">Unidades (1 a 3)</label>
+        <input type="number" id="unidades" th:field="*{unidades}" min="1" max="3">
+        <span class="error" th:if="${#fields.hasErrors('unidades')}" th:errors="*{unidades}"></span>
+
+        <label for="fechaRecogida">Fecha de recogida</label>
+        <input type="date" id="fechaRecogida" th:field="*{fechaRecogida}">
+        <span class="error" th:if="${#fields.hasErrors('fechaRecogida')}" th:errors="*{fechaRecogida}"></span>
+
+        <label for="fechaDevolucion">Fecha de devolución</label>
+        <input type="date" id="fechaDevolucion" th:field="*{fechaDevolucion}">
+        <span class="error" th:if="${#fields.hasErrors('fechaDevolucion')}" th:errors="*{fechaDevolucion}"></span>
+
+        <label for="motivo">Motivo del préstamo</label>
+        <textarea id="motivo" rows="5" th:field="*{motivo}" maxlength="400"></textarea>
+        <span class="error" th:if="${#fields.hasErrors('motivo')}" th:errors="*{motivo}"></span>
+
+        <label>
+            <input type="checkbox" th:field="*{normas}"> Acepto las normas y condiciones.
+        </label>
+        <span class="error" th:if="${#fields.hasErrors('normas')}" th:errors="*{normas}"></span>
+
+        <button type="submit">Enviar solicitud</button>
+    </form>
+    <!--Un enlace directo al catalgo siempre cuando el usuario no quiere estar en pagina incorrecta o se haya equivocado.-->
+    <p><a th:href="@{/}">Volver al catálogo</a></p>
+
+
+</main>
 </body>
 </html>

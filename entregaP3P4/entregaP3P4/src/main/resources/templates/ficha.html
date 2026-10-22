@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name = "viewport" content="width=device-width, initial-sacle=1">
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <title>Ficha Tecnica</title>
 </head>
 <body>
@@ -14,6 +15,11 @@
     <p><strong>Codigo: </strong><span th:text="${material[0]}">Codigo</span></p>
     <!-- Mostramos la descripcion del material.-->
     <p><strong>Descripcion: </strong><span th:text="${material[2]}">Codigo</span></p>
+    <!-- Un enlace al formulario para poder pedir el prestamo de los materiales que nos interese.-->
+    <p><a th:href="@{/solicitud/nueva}">Solicitar préstamo</a></p>
+
+    <!--Un enlace directo al catalgo siempre cuando el usuario no quiere estar en pagina incorrecta o se haya equivocado.-->
+    <p><a th:href="@{/}">Volver al catálogo</a></p>
 </main>
 
 </body>

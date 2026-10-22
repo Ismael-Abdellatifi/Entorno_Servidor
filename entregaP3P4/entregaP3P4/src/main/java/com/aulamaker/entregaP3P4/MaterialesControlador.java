@@ -1,12 +1,15 @@
 package com.aulamaker.entregaP3P4;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 //Creamos una matriz donde guardamos los siguientes datos : codigo,nombre y descripcion.
 @Controller
@@ -50,6 +53,59 @@ public class MaterialesControlador {
         model.addAttribute("turno", turno);
         return "ficha";
     }
+    //Nos calcula cuanto dura el prestamo, y el chronoUnit calcula la diferencia entre las dos fechas.
+    private long calcularDias(LocalDate recogida, LocalDate devolucion) {
+        return ChronoUnit.DAYS.between(recogida, devolucion) + 1;
+    }
+    //Este metodo nos ayuda y responde las peticiones dirigidas a esta direccion.
+    @GetMapping("/solicitud/nueva")
+    //Metodo que muestra el formulario para crear una nueva solicitud como se ve en el metodo.
+    public String nuevaSolicitud(Model model) {
+        //Se crea un objeto vacio del formulario, y en la vista lo rellenaras los campos obligatorios.
+        model.addAttribute("solicitud", new SolicitudPrestamoForm());
+        //Añade la lista de materiales disponibles.
+        model.addAttribute("materiales", MATERIALES);
+        return "formulario";
+    }
 
+    //Este metodo nos ayuda para enviar los datos al formulario.
+    @PostMapping("/solicitudes")
+    //Con @valid nos valida las solicitudes y los campos para que valgan correctamente.
+    //Con este metodo procesa los datos que introduce el usuario.
+    public String procesarSolicitud(@Valid @ModelAttribute("solicitud") SolicitudPrestamoForm solicitud,
+                                    BindingResult result,
+                                    Model model) {
+
+       //Si se cumple las dos condiciones, busca en este caso el material del catalogo.
+        //Y si devuelve null, que no se ha encontrado.
+        if (solicitud.getMaterial() != null && !solicitud.getMaterial().isBlank()
+                && buscarMaterial(solicitud.getMaterial()) == null) {
+            result.rejectValue("material", "material.desconocido",
+                    "El material elegido no está en el catálogo.");
+        }
+
+        //Comrpueba las fechas que existen
+        LocalDate recogida = solicitud.getFechaRecogida();
+        LocalDate devolucion = solicitud.getFechaDevolucion();
+        if (recogida != null && devolucion != null && devolucion.isBefore(recogida)) {
+            result.rejectValue("fechaDevolucion", "fecha.incoherente",
+                    "La devolución no puede ser anterior a la recogida.");
+        }
+
+
+        if (result.hasErrors()) {
+            model.addAttribute("materiales", MATERIALES);
+            return "formulario";
+        }
+        //Nos calcula la duracion del prestamos en dias.
+        String[] material = buscarMaterial(solicitud.getMaterial());
+        long dias = calcularDias(recogida, devolucion);
+        long diasUnidad = dias * solicitud.getUnidades();
+
+        model.addAttribute("nombreMaterial", material[1]);
+        model.addAttribute("dias", dias);
+        model.addAttribute("diasUnidad", diasUnidad);
+        return "resultado";
+    }
 
 }
